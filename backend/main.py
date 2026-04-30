@@ -96,7 +96,7 @@ app = FastAPI(
 # 1. Trusted hosts — rejects requests with unexpected Host headers (host-header injection)
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["nexusops.vercel.app", "*.nexusops.com", "localhost", "127.0.0.1"],
+    allowed_hosts=["nexusops-backend.vercel.app", "nexusops-frontend.vercel.app", "*.nexusops.com", "localhost", "127.0.0.1"],
 )
 
 # 2. CORS — explicit allowlist only, no wildcards in production
@@ -129,7 +129,7 @@ async def security_headers(request: Request, call_next):
     # HSTS — force HTTPS for 1 year
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     # Remove server fingerprint
-    response.headers.pop("server", None)
+    response.headers.__delitem__("server") if "server" in response.headers else None
     return response
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
